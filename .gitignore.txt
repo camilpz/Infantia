@@ -1,0 +1,26 @@
+# Root .gitignore
+# Node/Angular
+node_modules/
+dist/
+.angular/
+
+# Spring Boot
+target/
+.mvn/
+*.jar
+*.war
+*.class
+.springBeans
+application-*.yml
+application-*.properties
+!application.yml
+!application.properties
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
