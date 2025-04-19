@@ -24,4 +24,4 @@ application-*.properties
 *.iws
 *.ipr
 .project
-.classpath
+.classpath**/.env*
