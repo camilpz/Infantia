@@ -3,6 +3,7 @@
 node_modules/
 dist/
 .angular/
+*.env
 
 # Spring Boot
 target/
