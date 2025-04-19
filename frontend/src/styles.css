@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+.boton {
+    @apply font-semibold py-2 px-4 rounded-lg transition duration-200;
+}
+
+.boton-primario {
+    @apply boton bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.boton-secundario {
+    @apply boton bg-gray-300 text-gray-800 hover:bg-gray-400;
+}
