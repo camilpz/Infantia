@@ -1,18 +1,54 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
+/* Backgrounds */
 
-
-
-.boton {
-    @apply font-semibold py-2 px-4 rounded-lg transition duration-200;
+.bg-main{
+  @apply bg-[#F7B87F] font-sans;
 }
 
-.boton-primario {
-    @apply boton bg-blue-600 text-white hover:bg-blue-700;
+/* Buttons */
+
+.button-form-orange{
+  @apply bg-orange-400/70 text-white py-2 px-4 rounded-lg hover:bg-orange-400/85 cursor-pointer;
 }
 
-.boton-secundario {
-    @apply boton bg-gray-300 text-gray-800 hover:bg-gray-400;
+.button-form-white{
+  @apply bg-white text-orange-400 py-2 px-4 rounded-lg hover:bg-gray-100 cursor-pointer;
+}
+
+/* Inputs */
+
+.form-input{
+  @apply mt-1 block w-full px-3 py-2 border border-gray-200 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:ring-orange-500 mb-2.5 placeholder:text-gray-400;
+}
+
+/* Labels */
+
+.form-label{
+  @apply font-medium text-gray-700;
+}
+
+.navbar {
+  @apply bg-white shadow-md flex items-center justify-between px-4 py-2 fixed top-0 w-full z-10;
+}
+
+.nav-container {
+  @apply flex items-center justify-between w-full;
+}
+
+.nav-links {
+  @apply flex items-center gap-6 pr-4;
+}
+
+.animation-card{
+  @apply rounded-lg shadow-md p-4 transition-transform duration-300 ease-in-out transform hover:scale-105;
+  @apply hover:shadow-lg;
+}
+
+.feature-icon{
+  @apply w-[70px] h-[70px] bg-[#f8c291] rounded-full flex items-center justify-center mx-auto mb-5;
+  @apply text-4xl text-orange-400 mb-2;
+}
+.icon{
+  @apply text-[30px] text-white;
 }
