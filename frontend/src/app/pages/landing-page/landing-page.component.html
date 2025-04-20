@@ -1,0 +1,79 @@
+<!-- Busqueda de guarderías -->
+<section class="w-screen h-[80vh] bg-cover bg-center flex items-center justify-center text-center px-6"
+    style="background-image: url('assets/Infantia_background.png');">
+    <div class="max-w-4xl">
+        <h1 class="text-4xl md:text-6xl font-bold text-white drop-shadow-lg">
+            Encuentra la guardería perfecta para tu pequeño
+        </h1>
+        <p class="text-lg md:text-xl mt-6 text-white drop-shadow-md">
+            Infantia conecta a padres con guarderías de calidad, facilitando la gestión escolar, seguimiento del
+            desempeño y pagos de matrícula.
+        </p>
+        <button class="button-form-orange mt-6">Comienza a buscar</button>
+    </div>
+</section>
+
+
+<!-- Descripción de Infantia -->
+<section class="bg-[#FEF1E6] px-6 py-16">
+    <div class="max-w-6xl mx-auto">
+
+        <!-- Título principal -->
+        <h1 class="text-4xl font-bold text-center mb-12">¿Qué es Infantia?</h1>
+
+        <!-- Contenido en columnas -->
+        <div class="grid grid-cols-2  gap-10 items-center">
+
+            <!-- Imagen -->
+            <div class="flex justify-center">
+                <img src="https://limobelinwo.com/wp-content/uploads/2023/04/guarderia-de-una-oficina-1.jpg"
+                    alt="Infantia Imagen" class="rounded-lg shadow-lg w-full max-w-md">
+            </div>
+
+            <!-- Texto -->
+            <div>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+                    Una plataforma integral para padres y guarderías
+                </h2>
+                <p class="text-gray-700 text-justify">
+                    Infantia es un ecosistema digital que revoluciona la forma en que padres y guarderías interactúan.
+                    Ofrecemos herramientas para encontrar el centro infantil ideal según tus necesidades, gestionar
+                    matrículas,
+                    y dar seguimiento al desarrollo de tu hijo.
+                </p>
+                <p class="text-gray-700 mt-4 text-justify">
+                    Para las guarderías, proporcionamos un sistema completo de gestión administrativa, registro de
+                    estudiantes,
+                    comunicación con padres, y procesamiento de pagos. Todo centralizado en una plataforma intuitiva y
+                    segura.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Nuestras funcionalidades -->
+<section class="px-6 py-16">
+    <div class="max-w-6xl mx-auto">
+
+        <!-- Título principal -->
+        <h1 class="text-4xl font-bold text-center mb-6">Funcionalidades principales</h1>
+        <p class="text-lg text-center mb-12">Todo lo que necesitas para la educación preescolar</p>
+
+        <!-- Contenido en columnas -->
+        <div class="grid grid-cols-3 gap-10">
+
+            <!-- Tarjetas de funcionalidades -->
+            @for (feature of features; track $index) {
+            <div class="bg-gray-100 rounded-lg p-6 text-center animation-card">
+                <div class="feature-icon"><span class="icon">{{feature.icon}}</span></div>
+                <h2 class="text-xl font-semibold mb-2">{{feature.title}}</h2>
+                <p class="text-gray-700">{{feature.description}}</p>
+            </div>
+            }
+
+
+        </div>
+    </div>
+
+</section>

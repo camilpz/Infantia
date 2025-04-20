@@ -1,8 +1,14 @@
-<h1 class="text-3xl font-bold underline">
-  Hello world!
-</h1>
-<button class="boton-primario">fasdas</button>
+<router-outlet />
+<!-- <app-login /> -->
 
-<button class="boton-secundario">boton secundario</button>
+@if(isLoggedIn) {
+<app-navbar />
+}
+@else {
+<app-landing-navbar />
+}
 
-<button class="boton">boton xd</button>
+<div class="pt-13.5">
+    <app-landing-page/>
+</div>
+
