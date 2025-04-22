@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Product {
+public class StripeProduct {
     private String name;
     private Long quantity;
     private Long amount;

@@ -1,6 +1,6 @@
 package com.inf.payments.clients;
 
-import com.inf.payments.dtos.Product;
+import com.inf.payments.dtos.StripeProduct;
 import com.inf.payments.dtos.StripeSessionResponse;
 import com.stripe.Stripe;
 import com.stripe.model.checkout.Session;
@@ -18,25 +18,25 @@ public class StripeClient {
     @Value("${stripe.api.key}")
     private String stripeApiKey;
 
-    public StripeSessionResponse checkout(Product product) {
+    public StripeSessionResponse checkout(StripeProduct stripeProduct) {
         Stripe.apiKey = stripeApiKey;
 
         SessionCreateParams.LineItem.PriceData.ProductData productData =
                 SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                        .setName(product.getName())
+                        .setName(stripeProduct.getName())
                         .build();
 
         SessionCreateParams.LineItem.PriceData priceData =
                 SessionCreateParams.LineItem.PriceData.builder()
-                        .setCurrency(product.getCurrency())
-                        .setUnitAmount(product.getAmount() * 100)
+                        .setCurrency(stripeProduct.getCurrency())
+                        .setUnitAmount(stripeProduct.getAmount() * 100)
                         .setProductData(productData)
                         .build();
 
         SessionCreateParams.LineItem lineItem =
                 SessionCreateParams.LineItem.builder()
                         .setPriceData(priceData)
-                        .setQuantity(product.getQuantity())
+                        .setQuantity(stripeProduct.getQuantity())
                         .build();
 
         SessionCreateParams params =
