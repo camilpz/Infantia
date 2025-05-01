@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-parent-register',
   imports: [],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  templateUrl: './parent-register.component.html',
+  styleUrl: './parent-register.component.css'
 })
-export class LoginComponent {
+export class ParentRegisterComponent {
   constructor(private router: Router) {
   }
 

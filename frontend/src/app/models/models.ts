@@ -31,3 +31,21 @@ export const FEATURES: Feature[] = [
         description: 'Mantente conectado con los educadores a través de mensajes, avisos y calendario de actividades.'
     }
 ];
+
+
+export interface User {
+    name: string;
+    password: string;
+}
+
+export interface Parent{
+    name: string;
+    phone: string;
+    address: string;
+    contact: Contact[];
+}
+
+export interface Contact{
+    content: string;
+    isPrimary: string;
+}

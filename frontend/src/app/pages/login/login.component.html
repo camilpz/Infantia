@@ -29,9 +29,9 @@
         <div class="w-1/2 bg-main rounded-r-2xl p-10 items-center justify-center text-white">
             <h2 class="text-4xl font-semibold">¡Bienvenido/a a Infantia!</h2>
             <p class="text-lg mt-4">El lugar donde cuidamos juntos el desarrollo de tu pequeño.</p>
-            <p class="text-base mt-2">¿Eres nuevo? <b>Crea una cuenta</b></p>
+            <p class="text-base mt-2 under">¿Eres nuevo? <b class="underline">Crea una cuenta</b></p>
             <div class="flex flex-col items-center mt-6 w-full">
-                <button class="button-form-white mb-2 w-full hover:scale-75 transition-transform">Registrarse como padre</button>
+                <button class="button-form-white mb-2 w-full" (click)="navigate('home/parent-register')">Registrarse como padre</button>
                 <button class="button-form-white w-full" >Registrarse como guardería</button>
             </div>
         </div>
