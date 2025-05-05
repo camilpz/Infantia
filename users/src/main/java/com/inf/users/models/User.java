@@ -6,12 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-@Table(name = "User_table")
+@Table(name = "user_table")
 @Entity
 @Data
 @AllArgsConstructor
@@ -32,7 +31,7 @@ public class User {
     private String document;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     private Boolean enabled;
 
@@ -54,7 +53,7 @@ public class User {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = new Date();
+        createdAt = LocalDateTime.now();
         enabled = true;
     }
 }

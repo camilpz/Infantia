@@ -1,14 +1,11 @@
 package com.inf.users.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-@Table(name = "Contact_type")
+@Table(name = "contact_type")
 @Entity
 @Data
 @AllArgsConstructor
