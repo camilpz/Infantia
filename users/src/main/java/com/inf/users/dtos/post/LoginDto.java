@@ -1,4 +1,4 @@
-package com.inf.users.dtos;
+package com.inf.users.dtos.post;
 
 import lombok.Data;
 

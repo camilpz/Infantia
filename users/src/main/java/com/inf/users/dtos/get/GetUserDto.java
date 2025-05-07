@@ -1,10 +1,8 @@
-package com.inf.users.dtos;
+package com.inf.users.dtos.get;
 
-import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 @Data

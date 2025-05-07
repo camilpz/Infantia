@@ -1,9 +1,9 @@
 package com.inf.users.controllers;
 
-import com.inf.users.dtos.GetUserDto;
-import com.inf.users.dtos.LoginDto;
-import com.inf.users.dtos.PostUserDto;
-import com.inf.users.models.User;
+import com.inf.users.dtos.get.GetUserDto;
+import com.inf.users.dtos.post.LoginDto;
+import com.inf.users.dtos.post.PostUserTutorDto;
+import com.inf.users.dtos.put.PutUserTutorDto;
 import com.inf.users.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +19,10 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<GetUserDto> createUser(@RequestBody PostUserDto postUserDto) {
+    public ResponseEntity<GetUserDto> createUser(@RequestBody PostUserTutorDto postUserTutorDto) {
         // Logic to create a user
 
-        var userDTO = userService.create(postUserDto);
+        var userDTO = userService.createUserTutor(postUserTutorDto);
 
         System.out.println("userDTO: " + userDTO);
 
@@ -44,5 +44,13 @@ public class UserController {
         var users = userService.getAllUsers();
 
         return ResponseEntity.ok().body(users);
+    }
+
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<GetUserDto> updateTutor(@PathVariable Long userId, @RequestBody PutUserTutorDto putUserTutorDto) {
+
+        var updatedUser = userService.editTutor(userId, putUserTutorDto);
+
+        return ResponseEntity.ok().body(updatedUser);
     }
 }

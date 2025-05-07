@@ -1,17 +1,17 @@
 package com.inf.users.services;
 
-import com.inf.users.dtos.EditUserDto;
-import com.inf.users.dtos.GetUserDto;
-import com.inf.users.dtos.LoginDto;
-import com.inf.users.dtos.PostUserDto;
-import com.inf.users.models.User;
+import com.inf.users.dtos.put.EditUserDtoBase;
+import com.inf.users.dtos.get.GetUserDto;
+import com.inf.users.dtos.post.LoginDto;
+import com.inf.users.dtos.post.PostUserTutorDto;
+import com.inf.users.dtos.put.PutUserTutorDto;
 
 import java.util.List;
 
 public interface UserService {
-    GetUserDto create(PostUserDto userDTO);
+    GetUserDto createUserTutor(PostUserTutorDto userDTO);
     GetUserDto login(LoginDto loginDto);
     List<GetUserDto> getAllUsers();
     GetUserDto getUserById(Long id);
-    GetUserDto editUser(Long id, EditUserDto editUserDto);
+    GetUserDto editTutor(Long id, PutUserTutorDto putUserTutorDto);
 }

@@ -1,6 +1,14 @@
 package com.inf.users.services.Impl;
 
-import com.inf.users.dtos.*;
+import com.inf.users.clients.FamilyClient;
+import com.inf.users.clients.requests.PostTutorRequest;
+import com.inf.users.clients.requests.PutTutorRequest;
+import com.inf.users.dtos.get.GetUserDto;
+import com.inf.users.dtos.post.LoginDto;
+import com.inf.users.dtos.post.PostUserTutorDto;
+import com.inf.users.dtos.put.EditUserDtoBase;
+import com.inf.users.dtos.put.PutContactDto;
+import com.inf.users.dtos.put.PutUserTutorDto;
 import com.inf.users.models.*;
 import com.inf.users.repositories.*;
 import com.inf.users.services.UserService;
@@ -10,9 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,9 +32,11 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final DocumentTypeRepository documentTypeRepository;
 
+    private final FamilyClient familyClient;
+
     @Override
     @Transactional
-    public GetUserDto create(PostUserDto userDTO) {
+    public GetUserDto createUserTutor(PostUserTutorDto userDTO) {
         if (userDTO.getRoles() == null || userDTO.getRoles().isEmpty()) {
             throw new IllegalArgumentException("El usuario no posee roles");
         }
@@ -57,7 +65,34 @@ public class UserServiceImpl implements UserService {
 
         contacts.forEach(contact -> contact.setUser(user));
 
+        //Guardo el usuario en la base de datos
         userRepository.save(user);
+
+        //Por cada rol creo un usuario de ese tipo
+        user.getRoles().forEach(role -> {
+            if(role.getName().equals("TUTOR")) {
+                PostTutorRequest postTutorRequest = PostTutorRequest.builder()
+                        .userId(user.getId())
+                        .firstName(userDTO.getFirstName())
+                        .lastName(userDTO.getLastName())
+                        .address(userDTO.getAddress())
+                        .postalCode(userDTO.getPostalCode())
+                        .relationshipToChild(userDTO.getRelationshipToChild())
+                        .city(userDTO.getCity())
+                        .build();
+
+                try {
+                    familyClient.createTutor(postTutorRequest);
+                } catch (Exception e) {
+                    throw new IllegalStateException("No se pudo crear el tutor en el microservicio de Familia", e);
+                }
+
+            }
+            else if(role.getName().equals("DIRECTOR")) {
+                //TODO: Crear el director
+            }
+        });
+
 
         return GetUserDto.builder()
                 .id(user.getId())
@@ -70,7 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     //Busco los roles por id y los devuelvo en un Set
-    private Set<Role> getRoles(PostUserDto userDTO) {
+    private Set<Role> getRoles(PostUserTutorDto userDTO) {
         return userDTO.getRoles().stream()
                 .map(roleId -> roleRepostitory.findById(roleId)
                         .orElseThrow(() -> new IllegalArgumentException("El rol con id: " + roleId + " no existe")))
@@ -124,17 +159,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public GetUserDto editUser(Long id, EditUserDto editUserDto) {
+    public GetUserDto editTutor(Long id, PutUserTutorDto putUserTutorDto) {
         User user = getUserOrThrow(id);
 
-        //Actualizar Documento y Tipo de Documento
-        DocumentType documentType = getDocumentTypeOrThrow(editUserDto.getDocumentType());
-
-        user.setDocument(editUserDto.getDocument());
+        // Actualizar Documento y Tipo de Documento
+        DocumentType documentType = getDocumentTypeOrThrow(putUserTutorDto.getDocumentType());
+        user.setDocument(putUserTutorDto.getDocument());
         user.setDocumentType(documentType);
 
-        //Actualizar Contactos
-        List<Contact> updatedContacts = editUserDto.getContacts().stream()
+        // Sin borrar contactos, simplemente actualizarlos
+        List<Contact> currentContacts = new ArrayList<>(user.getContacts());
+
+        // Crear nuevos contactos
+        List<Contact> newContacts = putUserTutorDto.getContacts().stream()
                 .map(dto -> {
                     ContactType contactType = getContactTypeOrThrow(dto.getContactTypeId());
 
@@ -147,9 +184,30 @@ public class UserServiceImpl implements UserService {
                 })
                 .collect(Collectors.toList());
 
-        user.setContacts(updatedContacts);
+        // Compara y elimina contactos no referenciados
+        List<Contact> contactsToRemove = new ArrayList<>(currentContacts);
+        contactsToRemove.removeAll(newContacts);
 
+        user.getContacts().removeAll(contactsToRemove);
+        user.getContacts().addAll(newContacts);
+
+        // Guardar cambios en User
         userRepository.save(user);
+
+        try {
+            PutTutorRequest putTutorRequest = PutTutorRequest.builder()
+                    .firstName(putUserTutorDto.getFirstName())
+                    .lastName(putUserTutorDto.getLastName())
+                    .address(putUserTutorDto.getAddress())
+                    .postalCode(putUserTutorDto.getPostalCode())
+                    .relationshipToChild(putUserTutorDto.getRelationshipToChild())
+                    .city(putUserTutorDto.getCity())
+                    .build();
+
+            familyClient.updateTutor(user.getId(), putTutorRequest);
+        } catch (Exception e) {
+            throw new IllegalStateException("No se pudo editar el tutor en el microservicio de Familia", e);
+        }
 
         return GetUserDto.builder()
                 .id(user.getId())
@@ -162,7 +220,9 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    //Métodos para validar
+
+
+    //------------------------------------------------------------Métodos para validar--------------------------------------------------------------------
 
     private User getUserOrThrow(Long id) {
         return userRepository.findById(id)

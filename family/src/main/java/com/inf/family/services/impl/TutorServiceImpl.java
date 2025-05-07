@@ -3,6 +3,7 @@ package com.inf.family.services.impl;
 import com.inf.family.dtos.get.GetChildDto;
 import com.inf.family.dtos.post.PostTutorDto;
 import com.inf.family.dtos.get.GetTutorDto;
+import com.inf.family.dtos.put.PutTutorDto;
 import com.inf.family.mapper.ChildMapper;
 import com.inf.family.mapper.TutorMapper;
 import com.inf.family.models.Child;
@@ -36,10 +37,10 @@ public class TutorServiceImpl implements TutorService {
     }
 
     @Override
-    public GetTutorDto edit(Long tutorId, PostTutorDto postTutorDto) {
+    public GetTutorDto edit(Long tutorId, PutTutorDto putTutorDto) {
         Tutor existingTutor = getTutorOrThrow(tutorId);
 
-        tutorMapper.updateTutorFromPostTutorDto(postTutorDto, existingTutor);
+        tutorMapper.updateTutorFromPutTutorDto(putTutorDto, existingTutor);
 
         tutorRepository.save(existingTutor);
 

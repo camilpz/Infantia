@@ -3,6 +3,7 @@ package com.inf.family.controllers;
 import com.inf.family.dtos.get.GetChildDto;
 import com.inf.family.dtos.get.GetTutorDto;
 import com.inf.family.dtos.post.PostTutorDto;
+import com.inf.family.dtos.put.PutTutorDto;
 import com.inf.family.services.TutorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,8 @@ public class TutorController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<GetTutorDto> update(@PathVariable Long id, @RequestBody PostTutorDto postTutorDto) {
-        var tutorDTO = tutorService.edit(id, postTutorDto);
+    public ResponseEntity<GetTutorDto> update(@PathVariable Long id, @RequestBody PutTutorDto putTutorDto) {
+        var tutorDTO = tutorService.edit(id, putTutorDto);
 
         return ResponseEntity.ok().body(tutorDTO);
     }

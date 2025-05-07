@@ -1,0 +1,31 @@
+package com.inf.daycare.models;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Table(name = "comment")
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long parentId;
+
+    private String content;
+    private Long daycareId;
+    private LocalDateTime date;
+
+    @ManyToOne
+    @JoinColumn(name = "guarderia_id")
+    private Daycare daycare;
+}

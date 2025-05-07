@@ -2,6 +2,7 @@ package com.inf.family.mapper;
 
 import com.inf.family.dtos.post.PostTutorDto;
 import com.inf.family.dtos.get.GetTutorDto;
+import com.inf.family.dtos.put.PutTutorDto;
 import com.inf.family.models.Tutor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,5 +19,5 @@ public interface TutorMapper {
 
     // Mapea valores del DTO sobre el Tutor existente
     @Mapping(target = "id", ignore = true) //No tocar el ID
-    void updateTutorFromPostTutorDto(PostTutorDto dto, @MappingTarget Tutor tutor);
+    void updateTutorFromPutTutorDto(PutTutorDto dto, @MappingTarget Tutor tutor);
 }

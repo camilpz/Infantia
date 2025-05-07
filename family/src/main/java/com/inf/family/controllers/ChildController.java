@@ -24,8 +24,8 @@ public class ChildController {
         return ResponseEntity.ok().body(childDTO);
     }
 
-    @PutMapping("/edit/{child_id}")
-    public ResponseEntity<GetChildDto> edit(@PathVariable Long child_id, @RequestBody PostChildDto postChildDto) {
+    @PutMapping("/update/{child_id}")
+    public ResponseEntity<GetChildDto> update(@PathVariable Long child_id, @RequestBody PostChildDto postChildDto) {
 
         var childDTO = childService.edit(child_id, postChildDto);
 

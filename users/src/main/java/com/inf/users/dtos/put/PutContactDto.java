@@ -1,9 +1,12 @@
-package com.inf.users.dtos;
+package com.inf.users.dtos.put;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class PostContactDto {
+@Builder
+public class PutContactDto {
+    private Long id;
     private Long contactTypeId;
     private String content;
     private Boolean isPrimary;
