@@ -3,66 +3,112 @@
         style="background-image: url('assets/Infantia_background.png');">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl flex">
 
-            <!-- Registro de Padre -->
+            <!-- Registro de Tutor -->
             <div class="w-full p-10 flex flex-col justify-center">
-                <h2 class="text-3xl font-bold mb-6 text-orange-300 text-center">Registro de Padre</h2>
-                <form>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label for="nameInput" class="form-label">Nombre</label>
-                            <input type="text" id="nameInput" class="form-input">
-                        </div>
+                <h2 class="text-3xl font-bold mb-6 text-orange-300">Registro de Tutor</h2>
 
-                        <div>
-                            <label for="lastnameInput" class="form-label">Apellido</label>
-                            <input type="text" id="lastnameInput" class="form-input">
-                        </div>
+                <form [formGroup]="tutorForm" (ngSubmit)="onSubmit()">
 
-
-
-                        <div>
-                            <label for="emailInput" class="form-label">Correo electrónico</label>
-                            <input type="text" id="emailInput" class="form-input">
-                        </div>
-
-                        <div>
-                            <label for="ageInput" class="form-label">Fecha de nacimietno</label>
-                            <input type="text" id="ageInput" class="form-input">
-                        </div>
-
-                        
-
-                        <div>
-                            <label for="documentType" class="form-label">Tipo de documento</label>
-                            <input type="text" id="documentTypeInput" class="form-input">
-                        </div>
-
-                        <div>
-                            <label for="documentInput" class="form-label">Documento</label>
-                            <input type="text" id="documentInput" class="form-input">
-                        </div>
-
-
-
-                        <div>
-                            <label for="passwordInput" class="form-label">Contraseña</label>
-                            <input type="text" id="passwordInput" class="form-input">
-                        </div>
-
-                        <div>
-                            <label for="passwordConfirmInput" class="form-label">Repetir contraseña</label>
-                            <input type="text" id="passwordConfirmInput" class="form-input">
-                        </div>
-
-                        
+                    <div class="mb-1">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" class="form-input" formControlName="email"
+                            placeholder="Ingrese su email">
                     </div>
 
-                    <!-- Array con el tipo de contacto -->
+                    <div class="mb-1">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" id="password" class="form-input" formControlName="password"
+                            placeholder="Ingrese su contraseña">
+                    </div>
 
+                    <div class="mb-1">
+                        <label for="document" class="form-label">Documento</label>
+                        <input type="text" id="document" class="form-input" formControlName="document"
+                            placeholder="Ingrese su número de documento">
+                    </div>
 
-                    <button class="button-form-orange w-full">Registrar</button>
+                    <div class="mb-1">
+                        <label for="documentType" class="form-label">Tipo de Documento</label>
+                        <select id="documentType" class="form-input" formControlName="documentType">
+                            <option value="">Seleccione un tipo</option>
+                            <option *ngFor="let type of documentTypes" [value]="type.id">{{ type.name }}</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-1">
+                        <label class="form-label">Contactos</label>
+                        <div formArrayName="contacts">
+                            <div *ngFor="let contact of contacts.controls; let i = index" [formGroupName]="i"
+                                class="border p-3 mb-3 rounded">
+
+                                <div class="mb-1">
+                                    <label for="content-{{i}}" class="form-label">Contenido</label>
+                                    <input type="text" id="content-{{i}}" class="form-input" formControlName="content"
+                                        placeholder="Contenido del contacto">
+                                </div>
+
+                                <div class="mb-1">
+                                    <label for="type-{{i}}" class="form-label">Tipo</label>
+                                    <select id="type-{{i}}" class="form-input" formControlName="type">
+                                        <option value="">Seleccione un tipo</option>
+                                        <option *ngFor="let type of contactTypes" [value]="type.id">{{ type.name }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="isPrimary-{{i}}" formControlName="primary" class="mr-2">
+                                    <label for="isPrimary-{{i}}" class="form-label">¿Es primario?</label>
+                                </div>
+
+                                <button type="button" (click)="removeContact(i)"
+                                    class="text-red-500 text-sm underline">Eliminar contacto</button>
+                            </div>
+                        </div>
+
+                        <button type="button" (click)="addContact()" class="button-form-orange mt-2 w-full">Agregar
+                            contacto</button>
+                    </div>
+
+                    <div class="mb-1">
+                        <label for="firstName" class="form-label">Nombre</label>
+                        <input type="text" id="firstName" class="form-input" formControlName="firstName"
+                            placeholder="Ingrese su nombre">
+                    </div>
+
+                    <div class="mb-1">
+                        <label for="lastName" class="form-label">Apellido</label>
+                        <input type="text" id="lastName" class="form-input" formControlName="lastName"
+                            placeholder="Ingrese su apellido">
+                    </div>
+
+                    <div class="mb-1">
+                        <label for="address" class="form-label">Dirección</label>
+                        <input type="text" id="address" class="form-input" formControlName="address"
+                            placeholder="Ingrese su dirección">
+                    </div>
+
+                    <div class="mb-1">
+                        <label for="postalCode" class="form-label">Código Postal</label>
+                        <input type="text" id="postalCode" class="form-input" formControlName="postalCode"
+                            placeholder="Ingrese su código postal">
+                    </div>
+
+                    <div class="mb-1">
+                        <label for="city" class="form-label">Ciudad</label>
+                        <input type="text" id="city" class="form-input" formControlName="city"
+                            placeholder="Ingrese su ciudad">
+                    </div>
+
+                    <div class="mb-1">
+                        <label for="relationshipToChild" class="form-label">Relación con el niño</label>
+                        <textarea id="relationshipToChild" class="form-input" formControlName="relationshipToChild"
+                            rows="3" placeholder="Describa su relación con el niño"></textarea>
+                    </div>
+
+                    <button class="button-form-orange w-full mt-4">Registrar Tutor</button>
+
                 </form>
-
             </div>
 
         </div>
