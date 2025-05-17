@@ -1,5 +1,7 @@
 package com.inf.daycare.models;
 
+import com.inf.daycare.enums.PayStatusEnum;
+import com.inf.daycare.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,14 +21,21 @@ public class Enrollment {
 
     //Relaciones
     private Long childId;
-    private Long daycareId;
+
+    @ManyToOne
+    @JoinColumn(name = "daycare_id")
+    private Daycare daycare;
 
     private String enrollmentDate;
     private String startDate;
     private String endDate;
 
-    private String status; // "active", "inactive", "pending"
-    private String paymentStatus; // "paid", "unpaid", "pending"
+    private StatusEnum status; // "active", "inactive", "pending"
+    private PayStatusEnum paymentStatus; // "paid", "unpaid", "pending"
 
-    
+    @PrePersist
+    public void prePersist() {
+        this.status = StatusEnum.PENDIENTE;
+        this.paymentStatus = PayStatusEnum.PENDIENTE;
+    }
 }

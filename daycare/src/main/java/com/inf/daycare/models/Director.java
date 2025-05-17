@@ -8,36 +8,27 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Table(name = "daycare")
+@Table(name = "director")
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Daycare {
+public class Director {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long userId;
 
-    private String name;
+    private String firstName;
+    private String lastName;
     private String address;
     private String postalCode;
     private String city;
-    private String state;
-    private String country;
-    private String phoneNumber;
-    private String email;
     private Boolean enabled;
 
-    @ManyToOne
-    @JoinColumn(name = "director_id")
-    private Director director;
-
-    @OneToMany(mappedBy = "daycare")
-    private List<Enrollment> enrollments;
-
-    @OneToMany(mappedBy = "daycare")
-    private List<Comment> comments;
+    @OneToMany(mappedBy = "director")
+    private List<Daycare> daycares;
 
     @PrePersist
     public void prePersist() {

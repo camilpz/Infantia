@@ -17,6 +17,7 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long userId;
     private String firstName;
     private String lastName;
     private String dni;
@@ -24,4 +25,9 @@ public class Teacher {
     private String postalCode;
     private String city;
     private Boolean enabled;
+
+    @PrePersist
+    public void prePersist() {
+        this.enabled = true;
+    }
 }

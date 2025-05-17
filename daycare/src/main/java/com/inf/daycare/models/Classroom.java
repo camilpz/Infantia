@@ -23,8 +23,12 @@ public class Classroom {
     private String name;
     private String description;
     private String ageRange;
-    private String specialNeeds;
     private String schedule;
     private String location;
     private Boolean enabled;
+
+    @PrePersist
+    public void prePersist() {
+        this.enabled = true;
+    }
 }

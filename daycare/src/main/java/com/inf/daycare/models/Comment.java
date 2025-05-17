@@ -26,6 +26,11 @@ public class Comment {
     private LocalDateTime date;
 
     @ManyToOne
-    @JoinColumn(name = "guarderia_id")
+    @JoinColumn(name = "daycare_id")
     private Daycare daycare;
+
+    @PrePersist
+    public void prePersist() {
+        this.date = LocalDateTime.now();
+    }
 }
