@@ -2,6 +2,7 @@ package com.inf.family.mapper;
 
 import com.inf.family.dtos.get.GetChildDto;
 import com.inf.family.dtos.post.PostChildDto;
+import com.inf.family.dtos.put.PutChildDto;
 import com.inf.family.models.Child;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -25,6 +26,6 @@ public interface ChildMapper {
     List<GetChildDto> childListToGetChildDtoList(List<Child> children);
 
     @Mapping(target = "id", ignore = true)
-    void updateChildFromPostChildDto(PostChildDto postChildDto, @MappingTarget Child child);
+    void updateChildFromPutChildDto(PutChildDto putChildDto, @MappingTarget Child child);
 
 }

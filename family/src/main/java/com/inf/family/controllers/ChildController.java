@@ -2,6 +2,7 @@ package com.inf.family.controllers;
 
 import com.inf.family.dtos.get.GetChildDto;
 import com.inf.family.dtos.post.PostChildDto;
+import com.inf.family.dtos.put.PutChildDto;
 import com.inf.family.services.ChildService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +26,9 @@ public class ChildController {
     }
 
     @PutMapping("/update/{child_id}")
-    public ResponseEntity<GetChildDto> update(@PathVariable Long child_id, @RequestBody PostChildDto postChildDto) {
+    public ResponseEntity<GetChildDto> update(@PathVariable Long child_id, @RequestBody PutChildDto putChildDto) {
 
-        var childDTO = childService.edit(child_id, postChildDto);
+        var childDTO = childService.edit(child_id, putChildDto);
 
         return ResponseEntity.ok().body(childDTO);
     }

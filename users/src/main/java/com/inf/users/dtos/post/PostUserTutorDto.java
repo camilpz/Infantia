@@ -10,10 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostUserTutorDto extends PostUserDtoBase{
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String postalCode;
     private String relationshipToChild;
-    private String city;
 }

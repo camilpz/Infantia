@@ -2,6 +2,7 @@ package com.inf.family.services.impl;
 
 import com.inf.family.dtos.get.GetChildDto;
 import com.inf.family.dtos.post.PostChildDto;
+import com.inf.family.dtos.put.PutChildDto;
 import com.inf.family.exceptions.RelationAlreadyExistsException;
 import com.inf.family.mapper.ChildMapper;
 import com.inf.family.models.Child;
@@ -59,10 +60,10 @@ public class ChildServiceImpl implements ChildService {
     }
 
     @Override
-    public GetChildDto edit(Long id, PostChildDto postChildDto) {
+    public GetChildDto edit(Long id, PutChildDto putChildDto) {
         Child child = getChildOrThrow(id);
 
-        childMapper.updateChildFromPostChildDto(postChildDto, child);
+        childMapper.updateChildFromPutChildDto(putChildDto, child);
         childRepository.save(child);
 
         return childMapper.getChildToGetChildDto(child);

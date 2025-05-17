@@ -1,5 +1,6 @@
 package com.inf.users.dtos.post;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,13 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostUserDirectorDto extends PostUserDtoBase{
-    private String directorName;
-    private String directorLastName;
-    private String directorDocumentNumber;
-    private String directorDocumentType;
-    private String directorPhoneNumber;
-    private String directorEmail;
-    private String directorAddress;
-    private String directorCity;
-    private String directorCountry;
+    @NotNull(message = "Debe incluir al menos un título")
+    private String titles;
+
+    //private String country;
 }

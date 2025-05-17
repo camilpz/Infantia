@@ -5,10 +5,12 @@ import com.inf.users.clients.requests.PostTutorRequest;
 import com.inf.users.clients.requests.PutTutorRequest;
 import com.inf.users.dtos.get.GetUserDto;
 import com.inf.users.dtos.post.LoginDto;
+import com.inf.users.dtos.post.PostContactDto;
 import com.inf.users.dtos.post.PostUserTutorDto;
 import com.inf.users.dtos.put.EditUserDtoBase;
 import com.inf.users.dtos.put.PutContactDto;
 import com.inf.users.dtos.put.PutUserTutorDto;
+import com.inf.users.mapper.UserMapper;
 import com.inf.users.models.*;
 import com.inf.users.repositories.*;
 import com.inf.users.services.UserService;
@@ -31,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private final ContactTypeRepository contactTypeRepository;
     private final PasswordEncoder passwordEncoder;
     private final DocumentTypeRepository documentTypeRepository;
+    private final UserMapper userMapper;
 
     private final FamilyClient familyClient;
 
@@ -69,39 +72,32 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         //Por cada rol creo un usuario de ese tipo
-        user.getRoles().forEach(role -> {
-            if(role.getName().equals("TUTOR")) {
-                PostTutorRequest postTutorRequest = PostTutorRequest.builder()
-                        .userId(user.getId())
-                        .firstName(userDTO.getFirstName())
-                        .lastName(userDTO.getLastName())
-                        .address(userDTO.getAddress())
-                        .postalCode(userDTO.getPostalCode())
-                        .relationshipToChild(userDTO.getRelationshipToChild())
-                        .city(userDTO.getCity())
-                        .build();
+//        user.getRoles().forEach(role -> {
+//            if(role.getName().equals("TUTOR")) {
+//                PostTutorRequest postTutorRequest = PostTutorRequest.builder()
+//                        .userId(user.getId())
+//                        .firstName(userDTO.getFirstName())
+//                        .lastName(userDTO.getLastName())
+//                        .address(userDTO.getAddress())
+//                        .postalCode(userDTO.getPostalCode())
+//                        .relationshipToChild(userDTO.getRelationshipToChild())
+//                        .city(userDTO.getCity())
+//                        .build();
+        //          PostTutorRequest postTutorRequest = userMapper.postUserDtoToPostTutorRequest(userDTO);
+//
+//                try {
+//                    familyClient.createTutor(postTutorRequest);
+//                } catch (Exception e) {
+//                    throw new IllegalStateException("No se pudo crear el tutor en el microservicio de Familia", e);
+//                }
+//
+//            }
+//            else if(role.getName().equals("DIRECTOR")) {
+//                //TODO: Crear el director
+//            }
+//        });
 
-                try {
-                    familyClient.createTutor(postTutorRequest);
-                } catch (Exception e) {
-                    throw new IllegalStateException("No se pudo crear el tutor en el microservicio de Familia", e);
-                }
-
-            }
-            else if(role.getName().equals("DIRECTOR")) {
-                //TODO: Crear el director
-            }
-        });
-
-
-        return GetUserDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .document(user.getDocument())
-                .rolesNames(user.getRoles().stream()
-                        .map(Role::getName)
-                        .collect(Collectors.toList()))
-                .build();
+        return userMapper.userToGetUserDto(user);
     }
 
     //Busco los roles por id y los devuelvo en un Set
@@ -121,40 +117,21 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Contraseña incorrecta");
         }
 
-        return GetUserDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .document(user.getDocument())
-                .documentType(user.getDocumentType().getName())
-                .rolesNames(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
-                .build();
+        return userMapper.userToGetUserDto(user);
     }
 
     @Override
     public List<GetUserDto> getAllUsers() {
         var users = userRepository.findAll();
 
-        return users.stream()
-                .map(user -> GetUserDto.builder()
-                        .email(user.getEmail())
-                        .document(user.getDocument())
-                        .documentType(user.getDocumentType().getName())
-                        .rolesNames(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
-                        .build())
-                .collect(Collectors.toList());
+        return userMapper.userListToGetUserDtoList(users);
     }
 
     @Override
     public GetUserDto getUserById(Long id) {
         var user = getUserOrThrow(id);
 
-        return GetUserDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .document(user.getDocument())
-                .documentType(user.getDocumentType().getName())
-                .rolesNames(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
-                .build();
+        return userMapper.userToGetUserDto(user);
     }
 
     @Override
@@ -162,65 +139,64 @@ public class UserServiceImpl implements UserService {
     public GetUserDto editTutor(Long id, PutUserTutorDto putUserTutorDto) {
         User user = getUserOrThrow(id);
 
-        // Actualizar Documento y Tipo de Documento
+        // Actualizar datos básicos
         DocumentType documentType = getDocumentTypeOrThrow(putUserTutorDto.getDocumentType());
         user.setDocument(putUserTutorDto.getDocument());
         user.setDocumentType(documentType);
 
-        // Sin borrar contactos, simplemente actualizarlos
-        List<Contact> currentContacts = new ArrayList<>(user.getContacts());
+        // Mapeo de contactos existentes
+        Map<Long, Contact> existingContacts = user.getContacts().stream()
+                .filter(c -> c.getId() != null)
+                .collect(Collectors.toMap(Contact::getId, c -> c));
 
-        // Crear nuevos contactos
-        List<Contact> newContacts = putUserTutorDto.getContacts().stream()
-                .map(dto -> {
-                    ContactType contactType = getContactTypeOrThrow(dto.getContactTypeId());
+        List<Contact> contactsToKeep = new ArrayList<>();
 
-                    return Contact.builder()
-                            .contactType(contactType)
-                            .content(dto.getContent())
-                            .isPrimary(dto.getIsPrimary())
-                            .user(user)
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-        // Compara y elimina contactos no referenciados
-        List<Contact> contactsToRemove = new ArrayList<>(currentContacts);
-        contactsToRemove.removeAll(newContacts);
-
-        user.getContacts().removeAll(contactsToRemove);
-        user.getContacts().addAll(newContacts);
-
-        // Guardar cambios en User
-        userRepository.save(user);
-
-        try {
-            PutTutorRequest putTutorRequest = PutTutorRequest.builder()
-                    .firstName(putUserTutorDto.getFirstName())
-                    .lastName(putUserTutorDto.getLastName())
-                    .address(putUserTutorDto.getAddress())
-                    .postalCode(putUserTutorDto.getPostalCode())
-                    .relationshipToChild(putUserTutorDto.getRelationshipToChild())
-                    .city(putUserTutorDto.getCity())
-                    .build();
-
-            familyClient.updateTutor(user.getId(), putTutorRequest);
-        } catch (Exception e) {
-            throw new IllegalStateException("No se pudo editar el tutor en el microservicio de Familia", e);
+        // Actualizar o crear contactos
+        for (PutContactDto dto : putUserTutorDto.getContacts()) {
+            Contact contact = updateOrCreateContact(dto, user, existingContacts);
+            contactsToKeep.add(contact);
         }
 
-        return GetUserDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .document(user.getDocument())
-                .documentType(user.getDocumentType().getName())
-                .rolesNames(user.getRoles().stream()
-                        .map(Role::getName)
-                        .collect(Collectors.toList()))
-                .build();
+        // Eliminar los contactos que ya no están
+        for (Contact contact : existingContacts.values()) {
+            user.getContacts().remove(contact);
+        }
+
+        // Agregar los nuevos o actualizados
+        for (Contact contact : contactsToKeep) {
+            if (!user.getContacts().contains(contact)) {
+                user.getContacts().add(contact);
+            }
+        }
+
+        // Guardar cambios
+        userRepository.save(user);
+
+        return userMapper.userToGetUserDto(user);
     }
 
+    private Contact updateOrCreateContact(PutContactDto dto, User user, Map<Long, Contact> existingContacts) {
+        Contact contact;
 
+        if (dto.getId() != null && existingContacts.containsKey(dto.getId())) {
+            // Si el contacto ya existe, lo actualizamos
+            contact = existingContacts.get(dto.getId());
+            contact.setContent(dto.getContent());
+            contact.setIsPrimary(dto.getIsPrimary());
+            contact.setContactType(getContactTypeOrThrow(dto.getContactTypeId()));
+            existingContacts.remove(dto.getId());  // Lo quitamos del map
+        } else {
+            // Si es un contacto nuevo, lo creamos
+            contact = Contact.builder()
+                    .content(dto.getContent())
+                    .isPrimary(dto.getIsPrimary())
+                    .contactType(getContactTypeOrThrow(dto.getContactTypeId()))
+                    .user(user)
+                    .build();
+        }
+
+        return contact;
+    }
 
     //------------------------------------------------------------Métodos para validar--------------------------------------------------------------------
 
