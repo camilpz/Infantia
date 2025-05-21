@@ -8,29 +8,29 @@ import java.util.Objects;
 
 @Embeddable
 @Data
-public class TeacherDaycareId implements Serializable {
+public class TeacherClassroomId implements Serializable {
     private Long teacherId;
-    private Long daycareId;
+    private Long classroomId;
 
-    public TeacherDaycareId() {}
+    public TeacherClassroomId() {}
 
-    public TeacherDaycareId(Long teacherId, Long daycareId) {
+    public TeacherClassroomId(Long teacherId, Long classroomId) {
         this.teacherId = teacherId;
-        this.daycareId = daycareId;
+        this.classroomId = classroomId;
     }
 
     // equals() y hashCode() son OBLIGATORIOS en clases @Embeddable
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TeacherDaycareId)) return false;
-        TeacherDaycareId that = (TeacherDaycareId) o;
+        if (!(o instanceof TeacherClassroomId)) return false;
+        TeacherClassroomId that = (TeacherClassroomId) o;
         return Objects.equals(teacherId, that.teacherId) &&
-                Objects.equals(daycareId, that.daycareId);
+                Objects.equals(classroomId, that.classroomId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(teacherId, daycareId);
+        return Objects.hash(teacherId, classroomId);
     }
 }

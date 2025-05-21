@@ -99,7 +99,7 @@ public class ChildServiceImpl implements ChildService {
         return childMapper.getChildToGetChildDto(child);
     }
 
-    //------------------------------------------------Métodos privados----------------------------------------------------
+    //------------------------------------------------Métodos auxiliares----------------------------------------------------
 
     private Tutor getTutorOrThrow(Long id) {
         return tutorRepository.findByIdAndEnabledTrue(id).orElseThrow(() -> new RuntimeException("Tutor not found or disabled"));

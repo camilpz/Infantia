@@ -15,6 +15,6 @@ public class GetDaycareDto {
     private String phoneNumber;
     private String email;
     private Boolean enabled;
-
+    private String location;
 
 }

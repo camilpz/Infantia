@@ -14,4 +14,5 @@ public class PostDaycareDto {
     private String country;
     private String phoneNumber;
     private String email;
+    private String location;
 }

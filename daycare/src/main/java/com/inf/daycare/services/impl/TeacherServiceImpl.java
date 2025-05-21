@@ -7,6 +7,7 @@ import com.inf.daycare.mapper.TeacherMapper;
 import com.inf.daycare.models.Teacher;
 import com.inf.daycare.repositories.TeacherRepository;
 import com.inf.daycare.services.TeacherService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public GetTeacherDto getByUserId(Long userId) {
         Teacher teacher = teacherRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Profesor no encontrado con el ID de usuario: " + userId));
 
         return teacherMapper.teacherToGetTeacherDto(teacher);
     }
@@ -59,8 +60,8 @@ public class TeacherServiceImpl implements TeacherService {
         teacherRepository.save(teacher);
     }
 
-    Teacher getTeacherOrThrow(Long teacherId) {
+    public Teacher getTeacherOrThrow(Long teacherId) {
         return teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Profesor no encontrado"));
     }
 }

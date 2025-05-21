@@ -22,6 +22,12 @@ public class DaycareController {
         return ResponseEntity.ok(daycare);
     }
 
+    @GetMapping("/getAll")
+    public ResponseEntity<List<GetDaycareDto>> getAll() {
+        List<GetDaycareDto> daycares = daycareService.getAllDaycares();
+        return ResponseEntity.ok(daycares);
+    }
+
     @GetMapping("/getAllByDirectorId/{directorId}")
     public ResponseEntity<List<GetDaycareDto>> getAllByDirectorId(@PathVariable Long directorId) {
         List<GetDaycareDto> daycares = daycareService.getAllDaycaresByDirectorId(directorId);

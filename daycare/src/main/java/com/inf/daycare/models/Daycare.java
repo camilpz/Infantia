@@ -27,7 +27,11 @@ public class Daycare {
     private String country;
     private String phoneNumber;
     private String email;
+    private String location;
     private Boolean enabled;
+
+    @OneToMany(mappedBy = "daycare", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Classroom> classrooms;
 
     @ManyToOne
     @JoinColumn(name = "director_id")

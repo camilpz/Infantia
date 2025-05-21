@@ -77,7 +77,7 @@ public class TutorServiceImpl implements TutorService {
                 .toList();
     }
 
-    //------------------------------------------------Métodos privados----------------------------------------------------
+    //------------------------------------------------Métodos auxiliares----------------------------------------------------
 
     private Tutor getTutorOrThrow(Long id) {
         return tutorRepository.findByIdAndEnabledTrue(id).orElseThrow(() -> new RuntimeException("Tutor not found or disabled"));

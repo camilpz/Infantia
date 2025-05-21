@@ -20,10 +20,10 @@ public class Comment {
     private Long id;
 
     private Long parentId;
-
+    private Integer rating;
     private String content;
-    private Long daycareId;
-    private LocalDateTime date;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "daycare_id")
@@ -31,6 +31,11 @@ public class Comment {
 
     @PrePersist
     public void prePersist() {
-        this.date = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }

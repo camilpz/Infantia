@@ -39,8 +39,8 @@ public class TutorChild {
 //                .id(new TutorChildId(tutor.getId(), child.getId()))
 //                .build();
 //    }
-@EmbeddedId
-private TutorChildId id;
+    @EmbeddedId
+    private TutorChildId id;
 
     @ManyToOne
     @MapsId("tutorId")

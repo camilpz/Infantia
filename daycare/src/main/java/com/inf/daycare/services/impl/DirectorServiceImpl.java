@@ -7,6 +7,7 @@ import com.inf.daycare.mapper.DirectorMapper;
 import com.inf.daycare.models.Director;
 import com.inf.daycare.repositories.DirectorRepository;
 import com.inf.daycare.services.DirectorService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public GetDirectorDto getByUserId(Long userId) {
         Director director = directorRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Director not found with userId: " + userId));
+                .orElseThrow(() -> new EntityNotFoundException("Director no encontrado con la id de usuario: " + userId));
 
         return directorMapper.directorToGetDirectorDto(director);
     }
@@ -63,6 +64,6 @@ public class DirectorServiceImpl implements DirectorService {
 
     public Director getDirectorOrThrow(Long directorId) {
         return directorRepository.findById(directorId)
-                .orElseThrow(() -> new RuntimeException("Director not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Director no encontrado"));
     }
 }

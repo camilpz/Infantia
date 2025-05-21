@@ -3,6 +3,7 @@ package com.inf.daycare.services;
 import com.inf.daycare.dtos.get.GetTeacherDto;
 import com.inf.daycare.dtos.post.PostTeacherDto;
 import com.inf.daycare.dtos.put.PutTeacherDto;
+import com.inf.daycare.models.Teacher;
 
 public interface TeacherService {
     GetTeacherDto getById(Long teacherId);
@@ -10,4 +11,6 @@ public interface TeacherService {
     GetTeacherDto create(PostTeacherDto postTeacherDto);
     GetTeacherDto update(Long teacherId, PutTeacherDto putTeacherDto);
     void disable(Long teacherId);
+
+    Teacher getTeacherOrThrow(Long teacherId);
 }
