@@ -52,3 +52,16 @@
 .icon{
   @apply text-[30px] text-white;
 }
+
+.footer-bottom {
+  @apply w-full flex justify-center pt-5;
+}
+
+.footer-bottom-inner {
+  @apply w-4/5 border-t border-[#444] text-center;
+}
+
+.footer-bottom-inner p {
+  @apply text-gray-500 text-sm py-4 my-3;
+}
+
