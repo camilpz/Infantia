@@ -11,8 +11,9 @@ public interface CommentService {
     GetCommentDto getById(Long commentId);
     List<GetCommentDto> getAllByParentId(Long parentId);
     GetCommentRateDto getAllByDaycareId(Long daycareId);
-    GetCommentDto create(PostCommentDto postCommentDto);
+    GetCommentDto create(PostCommentDto postCommentDto, Long tutorId);
     GetCommentDto edit(Long commentId, PutCommentDto putCommentDto);
 
     void delete(Long commentId);
+    void changeStatus(Long commentId, Boolean status);
 }

@@ -6,6 +6,7 @@ import com.inf.daycare.dtos.post.PostEnrollmentDto;
 import com.inf.daycare.enums.PayStatusEnum;
 import com.inf.daycare.enums.StatusEnum;
 import com.inf.daycare.services.EnrollmentService;
+import com.inf.daycare.services.impl.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,11 @@ import java.util.List;
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
+    private final AuthService authService;
+
+    private Long getCurrentTutorId() {
+        return authService.getLoggedInTutorId();
+    }
 
     @GetMapping("/getById/{enrollmentId}")
     public ResponseEntity<GetSingleEnrollmentDto> getById(@PathVariable Long enrollmentId) {
@@ -33,7 +39,7 @@ public class EnrollmentController {
 
     @PostMapping("/create")
     public ResponseEntity<GetSingleEnrollmentDto> create(@RequestBody PostEnrollmentDto postEnrollmentDto) {
-        GetSingleEnrollmentDto getSingleEnrollmentDto = enrollmentService.create(postEnrollmentDto);
+        GetSingleEnrollmentDto getSingleEnrollmentDto = enrollmentService.create(postEnrollmentDto, getCurrentTutorId());
         return ResponseEntity.ok(getSingleEnrollmentDto);
     }
 

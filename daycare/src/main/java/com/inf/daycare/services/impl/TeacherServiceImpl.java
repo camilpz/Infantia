@@ -5,6 +5,7 @@ import com.inf.daycare.dtos.post.PostTeacherDto;
 import com.inf.daycare.dtos.put.PutTeacherDto;
 import com.inf.daycare.mapper.TeacherMapper;
 import com.inf.daycare.models.Teacher;
+import com.inf.daycare.models.User;
 import com.inf.daycare.repositories.TeacherRepository;
 import com.inf.daycare.services.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,12 +35,13 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public GetTeacherDto create(PostTeacherDto postTeacherDto) {
+    public Teacher create(PostTeacherDto postTeacherDto, User user) {
         Teacher teacher = teacherMapper.postTeacherDtoToTeacher(postTeacherDto);
+        teacher.setUser(user);
 
         Teacher savedTeacher = teacherRepository.save(teacher);
 
-        return teacherMapper.teacherToGetTeacherDto(savedTeacher);
+        return savedTeacher;
     }
 
     @Override

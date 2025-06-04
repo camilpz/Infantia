@@ -11,7 +11,7 @@ import java.util.List;
 public interface EnrollmentService {
     GetSingleEnrollmentDto getById(Long enrollmentId);
     List<GetEnrollmentDto> getAllByDaycareId(Long daycareId);
-    GetSingleEnrollmentDto create(PostEnrollmentDto postEnrollmentDto);
+    GetSingleEnrollmentDto create(PostEnrollmentDto postEnrollmentDto, Long tutorId);
     GetSingleEnrollmentDto updateStatus(Long enrollmentId, StatusEnum status);
     GetSingleEnrollmentDto updatePaymentStatus(Long enrollmentId, PayStatusEnum paymentStatus);
 

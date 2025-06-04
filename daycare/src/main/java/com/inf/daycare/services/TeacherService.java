@@ -4,11 +4,12 @@ import com.inf.daycare.dtos.get.GetTeacherDto;
 import com.inf.daycare.dtos.post.PostTeacherDto;
 import com.inf.daycare.dtos.put.PutTeacherDto;
 import com.inf.daycare.models.Teacher;
+import com.inf.daycare.models.User;
 
 public interface TeacherService {
     GetTeacherDto getById(Long teacherId);
     GetTeacherDto getByUserId(Long userId);
-    GetTeacherDto create(PostTeacherDto postTeacherDto);
+    Teacher create(PostTeacherDto postTeacherDto, User user);
     GetTeacherDto update(Long teacherId, PutTeacherDto putTeacherDto);
     void disable(Long teacherId);
 

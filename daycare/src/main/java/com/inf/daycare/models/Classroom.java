@@ -2,10 +2,7 @@ package com.inf.daycare.models;
 
 import com.inf.daycare.enums.ShiftEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +22,6 @@ public class Classroom {
     private String description;
     private int ageMin;
     private int ageMax;
-    private String schedule;
     private ShiftEnum shift;
     private int capacity;
     private Boolean enabled;
@@ -33,6 +29,9 @@ public class Classroom {
     @ManyToOne
     @JoinColumn(name = "daycare_id")
     private Daycare daycare;
+
+    @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Activity> activities = new HashSet<>();
 
     //VER
     @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY)

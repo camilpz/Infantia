@@ -5,6 +5,7 @@ import com.inf.daycare.dtos.post.PostDirectorDto;
 import com.inf.daycare.dtos.put.PutDirectorDto;
 import com.inf.daycare.mapper.DirectorMapper;
 import com.inf.daycare.models.Director;
+import com.inf.daycare.models.User;
 import com.inf.daycare.repositories.DirectorRepository;
 import com.inf.daycare.services.DirectorService;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,19 +28,20 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public GetDirectorDto getByUserId(Long userId) {
-        Director director = directorRepository.findByUserId(userId)
+        Director director = directorRepository.findByUser_Id(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Director no encontrado con la id de usuario: " + userId));
 
         return directorMapper.directorToGetDirectorDto(director);
     }
 
     @Override
-    public GetDirectorDto create(PostDirectorDto postDirectorDto) {
+    public Director create(PostDirectorDto postDirectorDto, User user) {
         Director director = directorMapper.postDirectorDtoToDirector(postDirectorDto);
+        director.setUser(user);
 
-        directorRepository.save(director);
+        Director savedDirector = directorRepository.save(director);
 
-        return directorMapper.directorToGetDirectorDto(director);
+        return savedDirector;
     }
 
     @Override
@@ -65,5 +67,10 @@ public class DirectorServiceImpl implements DirectorService {
     public Director getDirectorOrThrow(Long directorId) {
         return directorRepository.findById(directorId)
                 .orElseThrow(() -> new EntityNotFoundException("Director no encontrado"));
+    }
+
+    public Director getDirectorByUserOrThrow(Long userId) {
+        return directorRepository.findByUser_Id(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Director no encontrado para el usuario: " + userId));
     }
 }

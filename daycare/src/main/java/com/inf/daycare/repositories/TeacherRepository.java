@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     // Custom query methods can be defined here if needed
     Optional<Teacher> findByUserId(Long userId);
+    Optional<Teacher> findByUser_Id(Long userId);
 }

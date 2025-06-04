@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface DaycareRepository extends JpaRepository<Daycare, Long> {
-    Optional<List<Daycare>> findAllByDirectorId(Long directorId);
+    Optional<List<Daycare>> findAllByDirector_Id(Long directorId);
 }

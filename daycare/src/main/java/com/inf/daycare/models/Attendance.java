@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Attendance {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -35,9 +35,12 @@ public class Attendance {
     @JoinColumn(name = "classroom_id", nullable = false)
     private Classroom classroom; // Relación directa con Classroom
 
-    // --- ID del niño (sigue siendo de otro microservicio) ---
-    @Column(nullable = false)
-    private Long childId; // Este ID aún viene del microservicio de niños
+    //Antes era un long
+    @ManyToOne
+    @JoinColumn(name = "child_id", nullable = false)
+    private Child child;
+
+    private String notes;
 
     // --- Datos de la Asistencia ---
 
@@ -53,7 +56,7 @@ public class Attendance {
 
     private LocalDateTime checkOutTime; // Hora de salida (puede ser nulo inicialmente)
 
-    private String notes; // Notas adicionales
+    // Notas adicionales
 
     // --- Métodos de ciclo de vida de JPA ---
     @PrePersist

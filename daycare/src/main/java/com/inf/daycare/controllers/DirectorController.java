@@ -4,6 +4,7 @@ import com.inf.daycare.dtos.get.GetDirectorDto;
 import com.inf.daycare.dtos.post.PostDirectorDto;
 import com.inf.daycare.dtos.put.PutDirectorDto;
 import com.inf.daycare.services.DirectorService;
+import com.inf.daycare.services.impl.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,15 @@ import org.springframework.web.bind.annotation.*;
 public class DirectorController {
 
     private final DirectorService directorService;
+    private final AuthService authService;
 
-    @GetMapping("/getById/{directorId}")
-    public ResponseEntity<GetDirectorDto> getById(@PathVariable Long directorId) {
-        GetDirectorDto directorDto = directorService.getById(directorId);
+    private Long getCurrentDirectorId() {
+        return authService.getLoggedInDirectorId();
+    }
+
+    @GetMapping("/getById")
+    public ResponseEntity<GetDirectorDto> getById() {
+        GetDirectorDto directorDto = directorService.getById(getCurrentDirectorId());
         return ResponseEntity.ok(directorDto);
     }
 
@@ -27,21 +33,15 @@ public class DirectorController {
         return ResponseEntity.ok(directorDto);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<GetDirectorDto> create(@RequestBody PostDirectorDto postDirectorDto) {
-        GetDirectorDto createdDirector = directorService.create(postDirectorDto);
-        return ResponseEntity.ok(createdDirector);
-    }
-
-    @PutMapping("/update/{directorId}")
-    public ResponseEntity<GetDirectorDto> update(@PathVariable Long directorId, @RequestBody PutDirectorDto putDirectorDto) {
-        GetDirectorDto updatedDirector = directorService.update(directorId, putDirectorDto);
+    @PutMapping("/update")
+    public ResponseEntity<GetDirectorDto> update(@RequestBody PutDirectorDto putDirectorDto) {
+        GetDirectorDto updatedDirector = directorService.update(getCurrentDirectorId(), putDirectorDto);
         return ResponseEntity.ok(updatedDirector);
     }
 
-    @DeleteMapping("/disable/{directorId}")
-    public ResponseEntity<Void> disable(@PathVariable Long directorId) {
-        directorService.disable(directorId);
+    @DeleteMapping("/disable")
+    public ResponseEntity<Void> disable() {
+        directorService.disable(getCurrentDirectorId());
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,12 +1,17 @@
 package com.inf.daycare.models;
 
+import com.inf.daycare.enums.TypeDaycareEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Table(name = "daycare")
 @Entity
@@ -27,8 +32,34 @@ public class Daycare {
     private String country;
     private String phoneNumber;
     private String email;
-    private String location;
+
+    //Horarios de apertura y cierre
+    private LocalTime openingTime;
+    private LocalTime closingTime;
+
+    //Periodo de inscripción global
+    private LocalDate enrollmentPeriodStartDate;
+    private LocalDate enrollmentPeriodEndDate;
+
+    @Enumerated(EnumType.STRING)
+    private TypeDaycareEnum type;
+
     private Boolean enabled;
+
+    //Indica si la guardería ha sido validada por un administrador
+    private Boolean validated = false;
+
+    //Puede que una guardería no tenga latitud/longitud al inicio
+    @Column(nullable = true)
+    private Double latitude;
+
+    @Column(nullable = true)
+    private Double longitude;
+
+    //-----------------------------------Relaciones------------------------------------
+
+    @OneToMany(mappedBy = "daycare", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<DaycareShiftDefinition> shiftDefinitions = new HashSet<>();
 
     @OneToMany(mappedBy = "daycare", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Classroom> classrooms;
@@ -46,5 +77,6 @@ public class Daycare {
     @PrePersist
     public void prePersist() {
         this.enabled = true;
+        this.validated = false;
     }
 }

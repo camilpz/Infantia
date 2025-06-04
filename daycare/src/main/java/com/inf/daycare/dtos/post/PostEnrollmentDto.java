@@ -11,11 +11,8 @@ import java.time.LocalDate;
 public class PostEnrollmentDto {
     private Long childId;
     private Long daycareId;
-    private Integer childAge;
     private LocalDate enrollmentDate;
     private LocalDate startDate;
     private LocalDate endDate;
     private ShiftEnum shift;
-    private StatusEnum status;
-    private PayStatusEnum paymentStatus;
 }

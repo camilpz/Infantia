@@ -9,7 +9,6 @@ public class PostClassroomDto {
     private String description;
     private int ageMin;
     private int ageMax;
-    private String schedule;
     private ShiftEnum shift;
     private int capacity;
     private Long daycareId;

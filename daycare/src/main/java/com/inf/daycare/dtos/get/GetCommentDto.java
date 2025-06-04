@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class GetCommentDto {
     private Long id;
-    private Long parentId;
+    private String parentFullName;
     private Integer rating;
     private String content;
     private LocalDateTime createdAt;

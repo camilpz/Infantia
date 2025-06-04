@@ -11,9 +11,9 @@ import java.time.LocalDate;
 public class GetEnrollmentDto {
     private Long id;
     private LocalDate createdAt;
-    private String enrollmentDate;
-    private String startDate;
-    private String endDate;
+    private LocalDate enrollmentDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private ShiftEnum shift;
     private StatusEnum status;
     private PayStatusEnum paymentStatus;

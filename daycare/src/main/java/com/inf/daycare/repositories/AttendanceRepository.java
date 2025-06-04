@@ -4,6 +4,7 @@ import com.inf.daycare.models.Attendance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,5 +14,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     Optional<List<Attendance>> findAllByDaycare_IdAndClassroom_Id(Long daycareId, Long classroomId);
 
     //Trae todas las asistencias de un niño
-    Optional<List<Attendance>> findAllByChildId(Long childId);
+    List<Attendance> findAllByChild_Id(Long childId);
+
+    List<Attendance> findByChild_IdInAndAttendanceDateAndClassroom_Id(List<Long> childIds, LocalDate attendanceDate, Long classroomId);
 }

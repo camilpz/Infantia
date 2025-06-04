@@ -2,6 +2,7 @@ package com.inf.daycare.controllers;
 
 import com.inf.daycare.dtos.get.GetClassroomDto;
 import com.inf.daycare.dtos.post.PostClassroomDto;
+import com.inf.daycare.dtos.put.PutClassroomDto;
 import com.inf.daycare.services.ClassroomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +36,8 @@ public class ClassroomController {
     }
 
     @PutMapping("/update/{classroomId}")
-    public ResponseEntity<GetClassroomDto> update(@PathVariable Long classroomId, @RequestBody PostClassroomDto postClassroomDto) {
-        GetClassroomDto classroom = classroomService.update(classroomId, postClassroomDto);
+    public ResponseEntity<GetClassroomDto> update(@PathVariable Long classroomId, @RequestBody PutClassroomDto putClassroomDto) {
+        GetClassroomDto classroom = classroomService.update(classroomId, putClassroomDto);
         return ResponseEntity.ok(classroom);
     }
 
@@ -46,9 +47,9 @@ public class ClassroomController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/enable/{classroomId}")
-    public ResponseEntity<Void> enable(@PathVariable Long classroomId) {
-        classroomService.enableClassroom(classroomId);
+    @PutMapping("/changeStatus/{classroomId}")
+    public ResponseEntity<Void> enable(@PathVariable Long classroomId, @RequestParam boolean status) {
+        classroomService.changeStatus(classroomId, status);
         return ResponseEntity.noContent().build();
     }
 

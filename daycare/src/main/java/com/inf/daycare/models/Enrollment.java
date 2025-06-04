@@ -30,15 +30,21 @@ public class Enrollment {
     @JoinColumn(name = "classroom_id", nullable = false)
     private Classroom classroom;
 
-    private Long childId; // This ID comes from another microservice
+    // Antes era un long
+    @ManyToOne
+    @JoinColumn(name = "child_id", nullable = false)
+    private Child child;
 
     private LocalDate createdAt;
-    private String enrollmentDate;
+    private LocalDate enrollmentDate;
     private LocalDate startDate;
     private LocalDate endDate;
     private ShiftEnum shift;
 
+    @Enumerated(EnumType.STRING)
     private StatusEnum status; // "active", "inactive", "pending"
+
+    @Enumerated(EnumType.STRING)
     private PayStatusEnum paymentStatus; // "paid", "unpaid", "pending"
 
     @PrePersist

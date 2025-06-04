@@ -3,7 +3,7 @@ package com.inf.daycare.enums;
 public enum ShiftEnum {
     MAÑANA("Mañana"),
     TARDE("Tarde"),
-    GENERAL("General"),
+    TURNO_COMPLETO("Turno completo"),
     AMBOS("Ambos");
 
     private final String value;

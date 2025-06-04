@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class PostTeacherDto {
-    private Long userId;
     private String firstName;
     private String lastName;
     private String dni;
