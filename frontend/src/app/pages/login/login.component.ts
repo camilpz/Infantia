@@ -11,7 +11,7 @@ export class LoginComponent {
   constructor(private router: Router) {
   }
 
-  navigate(path: string) {
-    this.router.navigate([path]);
+  navigate(path: string, roleType: string = ''): void {
+    this.router.navigate([path, roleType]);
   }
 }

@@ -19,16 +19,8 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)
             },
             {
-                path: 'parent-register',
-                loadComponent: () => import('./pages/parent-register/parent-register.component').then(m => m.ParentRegisterComponent)
-            },
-            {
-                path: 'child-register',
-                loadComponent: () => import('./pages/child-register/child-register.component').then(m => m.ChildRegisterComponent)
-            },
-            {
-                path: 'director-register',
-                loadComponent: () => import('./pages/director-register/director-register.component').then(m => m.DirectorRegisterComponent)
+                path: 'register/:roleType',
+                loadComponent: () => import('./pages/register-form/register-form.component').then(m => m.RegisterFormComponent)
             }
         ]
     }

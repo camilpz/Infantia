@@ -31,8 +31,8 @@
             <p class="text-lg mt-4">El lugar donde cuidamos juntos el desarrollo de tu pequeño.</p>
             <p class="text-base mt-2 under">¿Eres nuevo? <b class="underline">Crea una cuenta</b></p>
             <div class="flex flex-col items-center mt-6 w-full">
-                <button class="button-form-white mb-2 w-full" (click)="navigate('home/parent-register')">Registrarse como padre</button>
-                <button class="button-form-white w-full" >Registrarse como guardería</button>
+                <button class="button-form-white mb-2 w-full" (click)="navigate('/home/register', 'tutor')">Registrarse como padre</button>
+                <button class="button-form-white w-full" (click)="navigate('/home/register', 'director')">Registrarse como guardería</button>
             </div>
         </div>
     </div>

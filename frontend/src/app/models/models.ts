@@ -34,18 +34,25 @@ export const FEATURES: Feature[] = [
 
 
 export interface User {
-    name: string;
+    email: string;
     password: string;
-}
-
-export interface Parent{
-    name: string;
-    phone: string;
+    document: string;
+    doucmentType: number;
+    roles: number[];
+    contacts: Contact[];
+    firstName: string;
+    lastName: string;
     address: string;
-    contact: Contact[];
+    city: string;
+    postalCode: string;
+    titles: number[];
+    relationshipToChild: string;
 }
 
 export interface Contact{
+    contactTypeId: number;
     content: string;
-    isPrimary: string;
+    isPrimary: boolean;
 }
+
+
