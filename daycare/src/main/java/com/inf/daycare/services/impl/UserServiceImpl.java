@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final ContactTypeRepository contactTypeRepository;
     private final PasswordEncoder passwordEncoder;
     private final DocumentTypeRepository documentTypeRepository;
+    private final TitleRepository titleRepository;
     private final UserMapper userMapper;
 
     //Services
@@ -89,7 +90,12 @@ public class UserServiceImpl implements UserService {
                 user.setTutorProfile(tutor);
 
             } else if (role.getName().equals("DIRECTOR")) {
+                Set<Title> titles = postUserDto.getTitles().stream()
+                        .map(this::getTitleOrThrow)
+                        .collect(Collectors.toSet());
+
                 PostDirectorDto postDirectorDto = userMapper.getPostUserDtotoToPostDirectorDto(postUserDto);
+                postDirectorDto.setTitles(titles);
 
                 //Crear el director y asociarlo al usuario
                 directorService.create(postDirectorDto, user);
@@ -186,6 +192,16 @@ public class UserServiceImpl implements UserService {
     public User getUserOrThrow(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+    }
+
+    @Override
+    public Boolean emailIsAvailable(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    private Title getTitleOrThrow(Long id) {
+        return titleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Título inválido"));
     }
 
     private DocumentType getDocumentTypeOrThrow(Long id) {

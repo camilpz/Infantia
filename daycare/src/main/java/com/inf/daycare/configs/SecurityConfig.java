@@ -76,6 +76,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll() //permitir acceso a H2
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/contactType/getAll").permitAll()
+                        .requestMatchers("/api/title/getAll").permitAll()
+                        .requestMatchers("api/daycare/getAll").permitAll()
+                        .requestMatchers("/api/daycare/getById/").permitAll()
                         .requestMatchers("/api/user/create").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()

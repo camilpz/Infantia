@@ -44,4 +44,10 @@ public class UserController {
 
         return ResponseEntity.ok().body(updatedUser);
     }
+
+    @GetMapping("/emailIsAvailable")
+    public ResponseEntity<Boolean> isEmailAvailable(@RequestParam String email) {
+        boolean isAvailable = userService.emailIsAvailable(email);
+        return ResponseEntity.ok(isAvailable);
+    }
 }

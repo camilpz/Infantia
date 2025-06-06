@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Table(name = "child")
 @Entity
@@ -28,6 +30,15 @@ public class Child {
     private GenderEnum gender;
     private String specialNeeds;
     private Boolean enabled = true;
+
+    //Relación Many-to-Many con AuthorizedPerson
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}) // PERSIST y MERGE para manejar las asociaciones
+    @JoinTable(
+            name = "child_authorized_person",
+            joinColumns = @JoinColumn(name = "child_id"),
+            inverseJoinColumns = @JoinColumn(name = "authorized_person_id")
+    )
+    private Set<AuthorizedPerson> authorizedPeople = new HashSet<>();
 
     @PrePersist
     public void prePersist() {

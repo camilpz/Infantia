@@ -29,11 +29,14 @@ public class Attendance {
     //Esto es útil para consultas rápidas, aunque ya están disponibles a través de Enrollment -> Classroom -> Daycare
     @ManyToOne
     @JoinColumn(name = "daycare_id", nullable = false)
-    private Daycare daycare; // Relación directa con Daycare
+    private Daycare daycare;
 
     @ManyToOne
     @JoinColumn(name = "classroom_id", nullable = false)
-    private Classroom classroom; // Relación directa con Classroom
+    private Classroom classroom;
+
+    @OneToOne(mappedBy = "attendance", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Pickup pickupRecord;
 
     //Antes era un long
     @ManyToOne
@@ -55,8 +58,6 @@ public class Attendance {
     private LocalDateTime checkInTime; // Hora de entrada
 
     private LocalDateTime checkOutTime; // Hora de salida (puede ser nulo inicialmente)
-
-    // Notas adicionales
 
     // --- Métodos de ciclo de vida de JPA ---
     @PrePersist

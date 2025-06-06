@@ -1,19 +1,21 @@
 package com.inf.daycare.services.impl;
 
+import com.inf.daycare.dtos.get.GetAuthorizedPersonDto;
 import com.inf.daycare.dtos.get.GetChildDto;
+import com.inf.daycare.dtos.post.PostAuthorizedPersonDto;
 import com.inf.daycare.dtos.post.PostChildDto;
 import com.inf.daycare.dtos.put.PutChildDto;
 import com.inf.daycare.exceptions.RelationAlreadyExistsException;
 import com.inf.daycare.mapper.ChildMapper;
-import com.inf.daycare.models.Child;
-import com.inf.daycare.models.Tutor;
-import com.inf.daycare.models.TutorChild;
-import com.inf.daycare.models.TutorChildId;
+import com.inf.daycare.models.*;
+import com.inf.daycare.repositories.AuthorizedPersonRepository;
 import com.inf.daycare.repositories.ChildRepository;
 import com.inf.daycare.repositories.TutorChildRepository;
 import com.inf.daycare.repositories.TutorRepository;
+import com.inf.daycare.services.AuthorizedPersonService;
 import com.inf.daycare.services.ChildService;
 import com.inf.daycare.services.TutorService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,8 @@ public class ChildServiceImpl implements ChildService {
     private final TutorService tutorService;
     private final TutorChildRepository tutorChildRepository;
     private final ChildMapper childMapper;
+    private final AuthorizedPersonService authorizedPersonService;
+    private final AuthorizedPersonRepository authorizedPersonRepository;
 
     @Override
     public GetChildDto getById(Long childId) {
@@ -55,35 +59,92 @@ public class ChildServiceImpl implements ChildService {
     }
 
     @Override
+    @Transactional // Asegúrate de que este método sea transaccional
     public GetChildDto create(PostChildDto postChildDto, Long tutorId) {
         Tutor tutor = tutorService.getTutorOrThrow(tutorId);
 
-        Child child = childMapper.postChildDtoToChild(postChildDto);
+        Child child;
 
-        //Verificar si el niño ya está registrado
-        Optional<Child> existingChild = childRepository.findByDniAndBirthDateAndFirstNameAndLastName
-                (postChildDto.getDni(),
-                        postChildDto.getBirthDate(),
-                        postChildDto.getFirstName(),
-                        postChildDto.getLastName());
+        //Verificar si el niño ya está registrado por DNI, Fecha de Nacimiento y Nombres
+        Optional<Child> existingChild = childRepository.findByDniAndBirthDateAndFirstNameAndLastName(
+                postChildDto.getDni(),
+                postChildDto.getBirthDate(),
+                postChildDto.getFirstName(),
+                postChildDto.getLastName());
 
-        //Si ya existe, se usa el existente, si no, se guarda el nuevo
+        // Si ya existe, se usa el existente; si no, se guarda el nuevo
         if(existingChild.isPresent()) {
             child = existingChild.get();
+            // Si el niño ya existe, es importante que la colección de AuthorizedPeople esté cargada
+            // si se va a modificar (lazy loading).
+            // Si no está cargada automáticamente (por `@Transactional` o fetch type EAGER),
+            // podrías necesitar `child.getAuthorizedPeople().size();` o similar para forzar la carga.
+        } else {
+            child = childMapper.postChildDtoToChild(postChildDto);
+            child = childRepository.save(child);
         }
-        else childRepository.save(child);
 
+        //Verificar y crear la relación Tutor-Niño
         boolean relationExists = tutorChildRepository.existsByTutorIdAndChildId(tutor.getId(), child.getId());
 
         if (!relationExists) {
-            TutorChild tutorChild = TutorChild.builder()
-                    .tutor(tutor)
-                    .child(child)
-                    .id(new TutorChildId(tutor.getId(), child.getId()))
-                    .build();
+            TutorChild tutorChild = new TutorChild(tutor, child);
+            // Si TutorChild usa @EmbeddedId o @IdClass, la forma comentada sería más explícita:
+            // TutorChild tutorChild = TutorChild.builder()
+            //         .tutor(tutor)
+            //         .child(child)
+            //         .id(new TutorChildId(tutor.getId(), child.getId())) // Asegúrate de que TutorChildId y el constructor existan
+            //         .build();
+
+            // Guardar la relación entre el tutor y el niño
             tutorChildRepository.save(tutorChild);
-        }
-        else{
+
+            User user = tutor.getUser();
+
+            //Validar que el tutor tenga un usuario asociado
+            if (user == null) {
+                throw new IllegalStateException("El tutor no tiene un usuario asociado para ser persona autorizada.");
+            }
+
+            // Obtener número de teléfono del usuario (de sus contactos)
+            String phoneNumber = user.getContacts().stream()
+                    .filter(contact -> {
+                        String type = contact.getContactType().getName();
+                        return type.equals("CELULAR") || type.equals("TELEFONO_FIJO");
+                    })
+                    .map(Contact::getContent)
+                    .findFirst()
+                    .orElse(null);
+
+            //Crear el DTO para la persona autorizada
+            PostAuthorizedPersonDto postAuthorizedPersonDto = new PostAuthorizedPersonDto();
+            postAuthorizedPersonDto.setFirstName(tutor.getFirstName());
+            postAuthorizedPersonDto.setLastName(tutor.getLastName());
+            postAuthorizedPersonDto.setDni(user.getDocument());
+            postAuthorizedPersonDto.setRelationshipToChild(tutor.getRelationshipToChild());
+            postAuthorizedPersonDto.setPhoneNumber(phoneNumber);
+            postAuthorizedPersonDto.setEmail(user.getEmail());
+
+            //VER SI YA EXISTE UNA PERSONA AUTORIZADA CON EL MISMO DNI
+            GetAuthorizedPersonDto getAuthorizedPersonDto;
+            try {
+                //Intentar buscar por DNI para reutilizar una persona autorizada existente
+                getAuthorizedPersonDto = authorizedPersonService.getAuthorizedPersonByDni(postAuthorizedPersonDto.getDni());
+            } catch (EntityNotFoundException e) {
+                //Si no se encuentra, crear una nueva persona autorizada
+                getAuthorizedPersonDto = authorizedPersonService.createAuthorizedPerson(postAuthorizedPersonDto);
+            }
+
+            // Obtener la entidad AuthorizedPerson
+            AuthorizedPerson authorizedPersonToAssociate = authorizedPersonRepository.findById(getAuthorizedPersonDto.getId())
+                    .orElseThrow(() -> new IllegalStateException("Error interno: AuthorizedPerson no encontrada después de crear/obtener por DNI.")); // Esto no debería ocurrir
+
+            //Añadir la persona autorizada al niño
+            child.getAuthorizedPeople().add(authorizedPersonToAssociate);
+
+            childRepository.save(child);
+
+        } else {
             throw new RelationAlreadyExistsException("Ya existe una relación entre el tutor y el niño");
         }
 

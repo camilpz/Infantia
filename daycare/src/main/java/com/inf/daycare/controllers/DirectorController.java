@@ -21,8 +21,8 @@ public class DirectorController {
         return authService.getLoggedInDirectorId();
     }
 
-    @GetMapping("/getById")
-    public ResponseEntity<GetDirectorDto> getById() {
+    @GetMapping("/getById/{directorId}")
+    public ResponseEntity<GetDirectorDto> getById(@PathVariable Long directorId) {
         GetDirectorDto directorDto = directorService.getById(getCurrentDirectorId());
         return ResponseEntity.ok(directorDto);
     }

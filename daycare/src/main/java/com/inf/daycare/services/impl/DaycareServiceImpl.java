@@ -137,35 +137,33 @@ public class DaycareServiceImpl implements DaycareService {
     @Override
     @Transactional // Esta operación modifica el estado de la base de datos
     public void removeTeacherFromDaycare(Long daycareId, Long teacherId, Long directorId) {
-        // 1. Obtener la guardería y verificar su existencia
+        //Verificar guarderia, director y profesor existan
         Daycare daycare = getDaycareOrThrow(daycareId);
 
-        // 2. Obtener el profesor (opcionalmente, si solo lo necesitas para el mensaje de error o validaciones futuras)
-        // teacherService.getTeacherOrThrow(teacherId); // Esto puede ser útil si quieres validar que el teacher existe
+        teacherService.getTeacherOrThrow(teacherId);
 
-        // 3. Validar permisos: Asegúrate de que el director autenticado es el director de esta guardería
         Director director = directorService.getDirectorOrThrow(directorId);
 
         if (!daycare.getDirector().getId().equals(director.getId())) {
             throw new AccessDeniedException("Acceso denegado. Solo el director de esta guardería puede remover profesores.");
         }
 
-        // 4. Buscar la relación específica TeacherDaycare
-        // Necesitarás un método en TeacherDaycareRepository que busque por daycareId y teacherId
+        //Buscar la relación entre el profesor y la guardería
         TeacherDaycare teacherDaycare = teacherDaycareRepository.findByDaycareIdAndTeacherId(daycareId, teacherId)
                 .orElseThrow(() -> new EntityNotFoundException("La relación entre el profesor y la guardería no existe."));
 
-        // 5. Eliminar la relación
+        //Eliminar la relación
         teacherDaycareRepository.delete(teacherDaycare);
     }
 
     @Override
     @Transactional
     public DaycareShiftDefinition createOrUpdateShiftDefinition(Long daycareId, PostDaycareShiftDefinitionDto dto, Long directorId) {
-        Daycare daycare = getDaycareOrThrow(daycareId); // Busca la guardería por ID
-        Director director = directorService.getDirectorOrThrow(directorId); // Verifica que el director existz
+        //Buscar y verificar que la guardería y el director existan
+        Daycare daycare = getDaycareOrThrow(daycareId);
+        Director director = directorService.getDirectorOrThrow(directorId);
 
-        // Verifica que el director sea el director de la guardería
+        //Verificar que el director sea el director de la guardería
         if (!daycare.getDirector().getId().equals(director.getId())) {
             throw new AccessDeniedException("Acceso denegado. Solo el director de esta guardería puede crear o actualizar definiciones de turno.");
         }
@@ -188,9 +186,9 @@ public class DaycareServiceImpl implements DaycareService {
         return daycareShiftDefinitionRepository.save(definition);
     }
 
-    @Transactional(readOnly = true) // Solo lee datos
+    @Transactional(readOnly = true)
     public List<GetDaycareDto> findNearbyDaycares(NearbyDaycareSearchDto searchDto) {
-        // Validación básica de los parámetros de búsqueda
+        //Validación básica de los parámetros de búsqueda
         if (searchDto.getLatitude() == null || searchDto.getLongitude() == null || searchDto.getRadiusKm() == null) {
             throw new IllegalArgumentException("Latitud, longitud y radio son requeridos para la búsqueda.");
         }
@@ -198,12 +196,9 @@ public class DaycareServiceImpl implements DaycareService {
             throw new IllegalArgumentException("El radio debe ser un valor positivo.");
         }
 
-        // Si quieres que solo tutores logueados puedan buscar, puedes usar authService.getLoggedInUserId();
-        // Long loggedInUserId = authService.getLoggedInUserId(); // Puedes usar esto para auditoría o permisos específicos si el tutor debe estar logueado.
-
         List<Daycare> allDaycares = daycareRepository.findAll(); // Obtiene todas las guarderías (o solo las habilitadas)
 
-        // Filtra las guarderías por distancia
+        //Filtra las guarderías por distancia
         List<Daycare> nearbyDaycares = allDaycares.stream()
                 .filter(daycare -> daycare.getLatitude() != null && daycare.getLongitude() != null) // Solo guarderías con coordenadas
                 .filter(daycare -> {

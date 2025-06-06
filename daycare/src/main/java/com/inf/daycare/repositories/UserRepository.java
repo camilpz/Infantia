@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Asegúrate de que solo cargue los roles si es lo que necesitas para el login.
     @EntityGraph(attributePaths = {"roles"})
     Optional<User> findByEmail(String email);
+
+    Boolean existsByEmail(String email);
 }

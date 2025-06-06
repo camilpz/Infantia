@@ -52,7 +52,7 @@ public class PostUserDto {
     //Especific fields for User
 
     //Director
-    private String titles;
+    private List<Long> titles;
 
     //Tutor
     private String relationshipToChild;

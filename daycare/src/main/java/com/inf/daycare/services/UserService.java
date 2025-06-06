@@ -14,4 +14,5 @@ public interface UserService {
     GetUserDto getUserById(Long id);
     GetUserDto editUser(Long id, PutUserDto putUserDto);
     User getUserOrThrow(Long id);
+    Boolean emailIsAvailable(String email);
 }
